@@ -1,0 +1,9 @@
+{
+    "platforms": ["ios", "android"],
+    "android": {
+        "modules": [ "com.react-native-passkey.PasskeyModule" ]
+    },
+    "ios": {
+        "modules": ["Passkey"]
+    }
+}
