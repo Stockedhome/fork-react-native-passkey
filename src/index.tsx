@@ -1,13 +1,3 @@
-import {
-  Passkey,
-  PasskeyRegistrationResult,
-  PasskeyAuthenticationResult,
-} from './Passkey';
-import type { PasskeyError } from './PasskeyError';
-
-export {
-  Passkey,
-  PasskeyError,
-  PasskeyRegistrationResult,
-  PasskeyAuthenticationResult,
-};
+export * from './NativePasskey'
+export * from './Passkey'
+export * from './PasskeyError'

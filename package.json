@@ -2,10 +2,9 @@
   "name": "react-native-passkey",
   "version": "2.1.1",
   "description": "Passkey implementation for React Native",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
-  "react-native": "lib/module/index",
+  "main": "src/index",
+  "module": "src/index",
+  "react-native": "src/index",
   "source": "src/index",
   "files": [
     "lib",
