@@ -1,5 +1,6 @@
 package com.reactnativepasskey
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.CreatePublicKeyCredentialRequest
@@ -9,10 +10,9 @@ import androidx.credentials.exceptions.*
 import androidx.credentials.exceptions.publickeycredential.CreatePublicKeyCredentialDomException
 import androidx.credentials.exceptions.publickeycredential.GetPublicKeyCredentialDomException
 import expo.modules.kotlin.Promise
-import expo.modules.kotlin.exception.Exceptions
-import expo.modules.kotlin.functions.Coroutine
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.toBridgePromise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
@@ -20,11 +20,12 @@ import kotlinx.coroutines.CoroutineScope
 class PasskeyModule : Module() {
   private val mainScope = CoroutineScope(Dispatchers.Default)
 
+  @SuppressLint("PublicKeyCredential")
   override fun definition() = ModuleDefinition {
-    Name("Passkey")
+    Name("PasskeyModule")
 
     AsyncFunction("register") { requestJson: String, promise: Promise ->
-      val credentialManager = CredentialManager.create(appContext.reactContext.applicationContext)
+      val credentialManager = CredentialManager.create(appContext.reactContext!!.applicationContext) // NOTE: This may cause Null Pointer Exceptions.
       val createPublicKeyCredentialRequest = CreatePublicKeyCredentialRequest(requestJson)
 
       mainScope.launch {
@@ -36,13 +37,13 @@ class PasskeyModule : Module() {
           val response = result?.data?.getString("androidx.credentials.BUNDLE_KEY_REGISTRATION_RESPONSE_JSON")
           promise.resolve(response)
         } catch (e: CreateCredentialException) {
-          promise.reject("Passkey", handleRegistrationException(e))
+          promise.toBridgePromise().reject("Passkey", handleRegistrationException(e))
         }
       }
     }
 
     AsyncFunction("authenticate") { requestJson: String, promise: Promise ->
-      val credentialManager = CredentialManager.create(appContext.reactContext.applicationContext)
+      val credentialManager = CredentialManager.create(appContext.reactContext!!.applicationContext) // NOTE: This may cause Null Pointer Exceptions.
       val getCredentialRequest = GetCredentialRequest(listOf(GetPublicKeyCredentialOption(requestJson)))
 
       mainScope.launch {
@@ -54,7 +55,7 @@ class PasskeyModule : Module() {
           val response = result?.credential?.data?.getString("androidx.credentials.BUNDLE_KEY_AUTHENTICATION_RESPONSE_JSON")
           promise.resolve(response)
         } catch (e: GetCredentialException) {
-          promise.reject("Passkey", handleAuthenticationException(e))
+          promise.toBridgePromise().reject("Passkey", handleAuthenticationException(e))
         }
       }
     }
